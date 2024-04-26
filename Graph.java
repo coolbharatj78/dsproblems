@@ -1,8 +1,11 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Graph {
     LinkedList<Integer>[] adjList;
+    HashSet<Integer> visitedSet = new HashSet<>();
     int vertices;
     public Graph(int vertices) {
         this.vertices = vertices;
@@ -27,17 +30,16 @@ public class Graph {
         while (!queue.isEmpty()) {
             List<Integer> currPath = queue.poll();
             int currNode = currPath.get(currPath.size()-1);
-
+            visitedSet.add(currNode);
             //System.out.println("===" + currPath);
             if (currNode == destNode) {
-                //printPath(currPath);
                 possiblePaths.add(currPath);
             }
             LinkedList<Integer> list = adjList[currNode];
 
             // visit the neighbours
             for (int i: list) {
-                if (notVisited(i, currPath)) {
+                if (notVisited(i)) {
                     List<Integer> newPath = new ArrayList<>(currPath);
                     newPath.add(i);
                     queue.add(newPath);
@@ -67,14 +69,8 @@ public class Graph {
         System.out.println();
     }
 
-    private boolean notVisited(int visitNode, List<Integer> currPath) {
-        for (int i=0; i<currPath.size(); i++) {
-            if (currPath.get(i) == visitNode) {
-                return false;
-            }
-        }
-
-        return true;
+    private boolean notVisited(int visitNode) {
+        return !visitedSet.contains(visitNode);
     }
 
     public void test1() {
@@ -125,9 +121,9 @@ public class Graph {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
+        //Scanner sc = new Scanner(new FileInputStream("/Users/bharat/target/dsproblems/test.txt"));
         Scanner sc = new Scanner(System.in);
-
         // String input
         String firstLine = sc.nextLine();
         String[] list = firstLine.split("\\s");
